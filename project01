@@ -25,3 +25,14 @@ CHIP And {
     Nand(a=a, b=b, out=nand);
     Not(in=nand, out=out);
 }
+
+CHIP Or {
+	IN a, b;
+	OUT out;
+	
+	PARTS:
+	Not(in=a, out=nota);
+	Not(in=b, out=notb);
+	And(a=nota, b=notb, out=notab);
+	Not(in=notab, out=out);
+}
