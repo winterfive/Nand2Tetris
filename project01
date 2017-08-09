@@ -41,3 +41,20 @@ CHIP Or {
  	Nand(a=b, b=b, out=notbandb);
  	Nand(a=notaanda, b=notbandb, out=out);
 }
+
+/**
+ * Exclusive-or gate:
+ * out = not (a == b)
+ */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    Not(in=a, out=nota);
+    Not(in=b, out=notb);
+    And(a=a, b=notb, out=aandnotb);
+    And(a=nota, b=b, out=notaandb);
+    Or(a=aandnotb, b=notaandb, out=out);
+}
