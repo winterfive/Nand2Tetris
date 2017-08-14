@@ -122,10 +122,11 @@ CHIP ALU {
 
     Not16(in=f1, out=notf1);                    // create not option for no
 
-    // no, negate the output?
-    Mux16(a=f1, b=notf1, sel=no, out[0..7]=lowOut, out[8..15]=highOut, out[15]=ng, out=out);      
+    // no, negate the output
+    Mux16(a=f1, b=notf1, sel=no, out[0..7]=zrLow, out[8..15]=zrHigh, out[15]=ng, out=out);      
 
-    Or8Way(in = lowOut,  out = lowZR);          // create option low for zr
-    Or8Way(in = highOut, out = highZR);         // create option high for zr
-    Or(a=lowZR, b=highZR, out=notzr);           // zr
+    Or8Way(in=zrLow, out=zr1);                  // create OR input
+    Or8Way(in=zrHigh, out=zr2);                 // create OR input
+    Or(a=zr1, b=zr2, out=zr3);                  // find input for NOT 
+    Not(in=zr3, out=zr);                        // zr
 }
