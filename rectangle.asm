@@ -5,41 +5,42 @@
 
 	@R0
 	D=M
-	@n     // R16
-	M=D    // n = RAM[0]
+	@n      // R16
+	M=D     // n = RAM[0]
 
-	@i     // R17
-	M=0    // i = 0
+	@i      // R17
+	M=0     // i = 0
 
 	@SCREEN
 	D=A
 	@address    // R18
-	M=D    // address = 16384 (base address of hack screen)
+	M=D     // address = 16384 (base address of hack screen)
 
-(LOOP)
+	(LOOP)
 	@i
 	D=M
 	@n
 	D=D-M
 
-	@27
-	D;JGT
+	@END
+	D;JGT    // if i > n, goto END
 
 	@address
 	A=M
-	M=-1
+	M=-1 	 // RAM[address] = 11111111111111111
 
 	@i
-	M=M+1
+	M=M+1    // i = i + 1
 
 	@32
 	D=A
 
 	@address
-	M=D+M
+	M=D+M    // address = address + 32
 
-	@10
-	0;JMP
+	@LOOP
+	0;JMP    // goto LOOP
 
-	@27
+	(END)
+	@END
 	0;JMP
