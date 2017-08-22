@@ -38,6 +38,144 @@
 
 	@END
 	D;JLE
+	
+	
+	
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/04/Fill.asm
+
+// Runs an infinite loop that listens to the keyboard input.
+// When a key is pressed (any key), the program blackens the screen,
+// i.e. writes "black" in every pixel;
+// the screen should remain fully black as long as the key is pressed. 
+// When no key is pressed, the program clears the screen, i.e. writes
+// "white" in every pixel;
+// the screen should remain fully clear as long as no key is pressed.
+
+// rectangle is 256 rows x 512 columns
+// keyboard = KBD, RAM[24576]
+// screen = SCREEN, RAM[16384]
+
+// Begin loop
+// If KBD != 0
+// 	make rectangle all black (1)
+// else
+// 	make rectangle all white (0)
+
+// VARIABLES and CONSTANTS
+
+@R0
+M=0
+
+@i
+M=0 			// iterator, i, @R16
+
+@SCREEN
+D=M 			// get SCREEN base value of 16384
+
+@address
+M=D			// pointer, address for SCREEN, @R17
+
+@R256
+D=A 			// 256 rows in SCREEN, @256
+
+@R32
+D=A 			// 32 16bit blocks per row, @R19
+
+// CODE BODY
+
+(LOOP)
+
+	@j
+	M=0 		// re/set iterator for rows, @R20
+
+	@k
+	M=0 		// re/set iterator for blocks, @R21
+
+	@KBD		
+	D=M 		// get KBD value
+
+	@WHITE
+	D;JEQ 		// check KBD for 0
+
+	@BLACK
+	D;JNE 		// check KBD for not 0
+
+(WHITE)			// loop, make all pixels white
+	(WROWS)
+	(WBLOCKS)
+		@address
+		M=0 	// make pixel white
+
+		@address
+		A=A+1 	// move to next block in row
+
+		@k
+		M=M+1 	// k++
+		D=M 	// get value for k
+
+		@R32
+		M=M-D
+		D=M 	// get value to check end of row
+
+		@WBLOCKS
+		D;JGT 	// if not 0, repeat block loop
+
+		@j
+		M=M+1 	// j++
+		D=M 	// get value for j
+
+		@R256
+		M=M-D 	// get value to check end of screen
+		D=M
+
+		@LOOP
+		D;JEQ 	// if 0, goto LOOP
+
+		@WROWS
+		D;JGT 	// if not 0, repeat row loop
+
+(BLACK)
+	(BROWS)
+	(BBLOCKS)
+		@address
+		M=1 	// make pixel black
+
+		@address
+		A=A+1 	// move to next block in row
+
+		@k
+		M=M+1 	// k++
+		D=M 	// get value for k
+
+		@R32
+		M=M-D
+		D=M 	// get value to check end of row
+
+		@BBLOCKS
+		D;JGT 	// if not 0, repeat block loop
+
+		@j
+		M=M+1 	// j++
+		D=M 	// get value for j
+
+		@R256
+		M=M-D 	// get value to check end of screen
+		D=M
+
+		@LOOP
+		D;JEQ 	// if 0, goto LOOP
+
+		@BROWS
+		D;JGT 	// if not 0, repeat row loop	
+
+	@R0
+	D=M 	// check value for while loop
+
+	@LOOP
+	D;JEQ 	// continuous loop
 
 	@R2
 	D=D+M 	// D = R1 + R2
@@ -51,7 +189,7 @@
 	@i
 	M=D 	// assign new value of i
 
-	@R0		// check if i > R0
+	@R0	// check if i > R0
 	D=M 	// get value of R0
 
 	@i
