@@ -58,149 +58,56 @@
 // keyboard = KBD, RAM[24576]
 // screen = SCREEN, RAM[16384]
 
-// Begin loop
-// If KBD != 0
-// 	make rectangle all black (1)
-// else
-// 	make rectangle all white (0)
+@24576
+D=A 			// D = 24576
 
-// VARIABLES and CONSTANTS
-
-@R0
-M=0
-
-@i
-M=0 			// iterator, i, @R16
-
-@SCREEN
-D=M 			// get SCREEN base value of 16384
-
-@address
-M=D			// pointer, address for SCREEN, @R17
-
-@R256
-D=A 			// 256 rows in SCREEN, @256
-
-@R32
-D=A 			// 32 16bit blocks per row, @R19
-
-// CODE BODY
+@endValue
+M=D 			// endValue holds 24576, R16
 
 (LOOP)
-
-	@j
-	M=0 		// re/set iterator for rows, @R20
-
-	@k
-	M=0 		// re/set iterator for blocks, @R21
+	@SCREEN
+	D=A
+	@address 	// R17
+	M=D 		// address = 16384
 
 	@KBD		
-	D=M 		// get KBD value
+	D=M 		// KBD = D (listen to keyboard)
 
-	@WHITE
-	D;JEQ 		// check KBD for 0
+	@WLOOP 	 	// KBD == 0? (key not pressed)
+	D;JEQ 		// if 0, goto WLOOP
 
-	@BLACK
-	D;JNE 		// check KBD for not 0
-
-(WHITE)			// loop, make all pixels white
-	(WROWS)
-	(WBLOCKS)
+	(BLOOP)
 		@address
-		M=0 	// make pixel white
+		A=M
+		M=-1 		// fill pixel w/ black
 
 		@address
-		A=A+1 	// move to next block in row
+		M=M+1 		// move to next R
+		D=M 		// address = D
 
-		@k
-		M=M+1 	// k++
-		D=M 	// get value for k
-
-		@R32
-		M=M-D
-		D=M 	// get value to check end of row
-
-		@WBLOCKS
-		D;JGT 	// if not 0, repeat block loop
-
-		@j
-		M=M+1 	// j++
-		D=M 	// get value for j
-
-		@R256
-		M=M-D 	// get value to check end of screen
-		D=M
+		@endValue
+		D=M-D 		// endValue - current address
 
 		@LOOP
-		D;JEQ 	// if 0, goto LOOP
+		D;JEQ 		// D = 0, goto LOOP
 
-		@WROWS
-		D;JGT 	// if not 0, repeat row loop
+		@BLOOP
+		D;JNE 		// D != 0, goto BLOOP
 
-(BLACK)
-	(BROWS)
-	(BBLOCKS)
+	(WLOOP)
 		@address
-		M=1 	// make pixel black
+		A=M
+		M=0 		// fill pixel w/ white
 
 		@address
-		A=A+1 	// move to next block in row
+		M=M+1 		// move to next R
+		D=M 		// address = D
 
-		@k
-		M=M+1 	// k++
-		D=M 	// get value for k
-
-		@R32
-		M=M-D
-		D=M 	// get value to check end of row
-
-		@BBLOCKS
-		D;JGT 	// if not 0, repeat block loop
-
-		@j
-		M=M+1 	// j++
-		D=M 	// get value for j
-
-		@R256
-		M=M-D 	// get value to check end of screen
-		D=M
+		@endValue
+		D=M-D 		// endValue - current address
 
 		@LOOP
-		D;JEQ 	// if 0, goto LOOP
+		D;JEQ 		// D = 0, goto LOOP
 
-		@BROWS
-		D;JGT 	// if not 0, repeat row loop	
-
-	@R0
-	D=M 	// check value for while loop
-
-	@LOOP
-	D;JEQ 	// continuous loop
-
-	@R2
-	D=D+M 	// D = R1 + R2
-
-	@R2
-	M=D 	// R2 = D
-
-	@i
-	D=M+1 	// i++
-
-	@i
-	M=D 	// assign new value of i
-
-	@R0	// check if i > R0
-	D=M 	// get value of R0
-
-	@i
-	D=D-M 	// D = 0?
-
-	@END	// if i > R0
-	D;JLE
-
-	@LOOP
-	D;JGT
-
-(END)
-	@END
-	0;JMP
+		@WLOOP
+		D;JNE 		// D != 0, goto WLOOP
