@@ -76,34 +76,72 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    Not(in=instruction[15], out=aInstr);
-    And(a=instruction[15], b=true, out=cInstr);
-    And(a=cInstr, b=instruction[12], out=useM);
-    And(a=cInstr, b=instruction[5], out=destA);
-    And(a=cInstr, b=instruction[4], out=destD);
-    And(a=cInstr, b=instruction[3], out=writeM);
+    Not(in=instruction[15], out=aI);
+    And(a=instruction[15], b=true, out=cI);
+    And(a=cI, b=instruction[12], out=useM);
+    And(a=cI, b=instruction[5], out=destA);
+    And(a=cI, b=instruction[4], out=destD);
+    And(a=cI, b=instruction[3], out=writeM);
 
-    Mux16(a=loop, b=instruction, sel=aInstr, out=aIn);
+    Mux16(a=loop, b=instruction, sel=aI, out=aI2);
 
-    Or(a=destA, b=aInstr, out=loadA);
-    ARegister(in=aIn, load=loadA, out=aOut, out[0..14]=addressM);
+    Or(a=destA, b=aI, out=loadA);
+    ARegister(in=aI2, load=loadA, out=aOut, out[0..14]=addressM);
 
     Mux16(a=aOut, b=inM, sel=useM, out=aOrM);
 
     DRegister(in=loop, load=destD, out=dOut);
 
-    ALU(x=dOut, y=aOrM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], zr=aluZr, ng=aluNg, out=loop, out=aluOut);
-    Mux16(a=aOrM, b=aluOut, sel=cInstr, out=outM);
+    ALU(x=dOut, 
+		y=aOrM, 
+		zx=instruction[11], 
+		nx=instruction[10], 
+		zy=instruction[9], 
+		ny=instruction[8], 
+		f=instruction[7], 
+		no=instruction[6], 
+		zr=aluZR, 
+		ng=aluNG, 
+		out=loop, 
+		out=aluOut);
+    Mux16(a=aOrM, b=aluOut, sel=cI, out=outM);
 
-    And(a=aluNg, b=instruction[2], out=jlt);
-    And(a=aluZr, b=instruction[1], out=jeq);
-    Or(a=aluZr, b=aluNg, out=zrOrNg);
-    Not(in=zrOrNg, out=notZrOrNg);
-    And(a=notZrOrNg, b=instruction[0], out=jgt);
-    Or(a=jlt, b=jeq, out=jltOrJeq);
-    Or(a=jltOrJeq, b=jgt, out=jltOrJeqOrJgt);
-    And(a=cInstr, b=jltOrJeqOrJgt, out=jump);
+    And(a=aluNG, b=instruction[2], out=jumpLT);
+    And(a=aluZR, b=instruction[1], out=jumpEQ);
+    Or(a=aluZR, b=aluNG, out=zrOrNG);
+    Not(in=zrOrNG, out=notZROrNG);
+    And(a=notZROrNG, b=instruction[0], out=jumpGT);
+    Or(a=jumpLT, b=jumpEQ, out=jumpLTOrjumpEQ);
+    Or(a=jumpLTOrjumpEQ, b=jumpJT, out=jumpLTOrjumpEQOrjumpGT);
+    And(a=cI, b=jumpLTOrjumpEQOrjumpGT, out=jump);
     Not(in=jump, out=noJump);
 
     PC(in=aOut, load=jump, inc=noJump, reset=reset, out[0..14]=pc);
 }
+
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/Computer.hdl
+
+/**
+ * The HACK computer, including CPU, ROM and RAM.
+ * When reset is 0, the program stored in the computer's ROM executes.
+ * When reset is 1, the execution of the program restarts. 
+ * Thus, to start a program's execution, reset must be pushed "up" (1)
+ * and "down" (0). From this point onward the user is at the mercy of 
+ * the software. In particular, depending on the program's code, the 
+ * screen may show some output and the user may be able to interact 
+ * with the computer via the keyboard.
+ */
+
+CHIP Computer {
+
+    IN reset;
+
+    PARTS:
+    ROM32K(address=pc, out=instruction);
+	CPU(inM=inM, instruction=instruction, reset=reset, outM=outM, addressM=addressM, writeM=writeM, pc=pc);
+	Memory(in=outM, load=writeM, address=addressM, out=inM);
+}
+
