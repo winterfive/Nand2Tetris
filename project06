@@ -1,0 +1,22 @@
+// Lee Gainer, NandtoTetris, Project 6, Aug. 2017
+//
+// Assembler program to translate Assembly Language into machine code
+// 
+// Create an empty symbol table
+// Add pre-defined symbols and their values
+// 1st Pass
+//		Scan program
+//		Add labels and their values to symbol table
+// 2nd Pass
+//  	Set n to 16
+//		Scan program for each instruction
+//		If @symbol, look up in table
+//			If found, use value in the table
+//			Else, add symbol n to the table
+//				Use n to complete the translation
+//				n++
+//		If a C instruction, translate
+//		Write translation to output file
+
+// Create a variable to manage program flow
+// Check for EOF
