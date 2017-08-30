@@ -5,14 +5,66 @@
 
 #!/usr/bin/python
 
-# create empty symbol table
+import sys
+
+# create empty symbol table, dict
 # add pre-defined symbols
 
 # 1st Pass - scan program
 # 		   - add labels and their values to table
 
-# 2nd Pass - set n to 16
-#		   - check for EOF
-#		   - scan program for each instruction
+# 2nd Pass - scan program for each instruction
 #		   - find binary value for each instruction and place in output file
-#		   - n++
+
+# create dict symbolTable
+symbolTable = {'SP': 0, 'R0': 0, 'LCL': 1, 'R1': 1, 'ARG': 2, 'R2': 2,
+	'THIS': 3, 'R3': 3, 'THAT': 4, 'R4': 4, 'R5': 5, 'R6': 6, 'R7': 7,
+	'R8': 8, 'R9': 9, 'R10': 10, 'R11': 11, 'R12': 12, 'R13': 13,
+	'R14': 14, 'R15': 15, 'SCREEN': 16384, 'KBD': 24576}
+
+# get name for new file
+title = sys.argv[1]
+
+# create hack file to write to
+with open (title, 'w')
+
+# open file.asm to be translated
+with open(sys.argv[0], 'r') as f:
+    for line in f:
+    	line = f.readline()
+
+    	if line[0] == '@':
+    		x = findValueA()
+
+    	if line[0] is 'A' or 'D' or 'M':
+    		x = findValueC()
+
+    	# write x to hack file
+    	title.write(x)
+
+def findValueA(value):
+	# remove @ from string
+	value.lstrip()
+
+	# check if string is a number or letters using isdigit()
+	# TODO
+
+	# change value to an int
+	int(value)
+
+	# find value in binary
+	format(value, 'b')
+
+	# change to string
+	str(value)
+
+	#concatenate w/ @
+	value = value + '@'
+
+	# return value
+	return value
+
+def findValueC():  # TODO
+
+
+
