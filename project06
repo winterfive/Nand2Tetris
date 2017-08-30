@@ -1,22 +1,18 @@
-// Lee Gainer, NandtoTetris, Project 6, Aug. 2017
-//
-// Assembler program to translate Assembly Language into machine code
-// 
-// Create an empty symbol table
-// Add pre-defined symbols and their values
-// 1st Pass
-//		Scan program
-//		Add labels and their values to symbol table
-// 2nd Pass
-//  	Set n to 16
-//		Scan program for each instruction
-//		If @symbol, look up in table
-//			If found, use value in the table
-//			Else, add symbol n to the table
-//				Use n to complete the translation
-//				n++
-//		If a C instruction, translate
-//		Write translation to output file
+# Author: Lee Gainer
+# Date: Aug 2017
+# Course: NandtoTetris, final project
+# Function: Translate any .asm file to binary (.hack)
 
-// Create a variable to manage program flow
-// Check for EOF
+#!/usr/bin/python
+
+# create empty symbol table
+# add pre-defined symbols
+
+# 1st Pass - scan program
+# 		   - add labels and their values to table
+
+# 2nd Pass - set n to 16
+#		   - check for EOF
+#		   - scan program for each instruction
+#		   - find binary value for each instruction and place in output file
+#		   - n++
