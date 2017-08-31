@@ -1,29 +1,20 @@
 def findValueA(value):
 	# Purpose: return 16bit binary value of the arguement
-	# Stub: string -> int
+	# Stub: string -> string
 	
 	# remove @ from string
-	value.strip('@')
+	newValue = value.strip('@\n')
 	
-	# remove /n from string
-	value.strip()
-	
-	# check if string is a number or letters using isdigit()
-	value.isnumeric()
-
 	# change value to an int
-	int(value)
+	newValue = int(newValue)
 
 	# find value in binary
-	format(value, 'b')
+	newValue = format(newValue, 'b')
 
-	# change to string
-	str(value)
-
-	if value(len) < 16:
-		value.zfill(16)
+	# if newValue(len) < 16:
+	newValue = newValue.zfill(16)
 		
 	# return value
-	return value
+	return newValue
 
-# def findValueC():  # TODO
+# def findValueC(): TODO
