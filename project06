@@ -6,6 +6,7 @@
 #!/usr/bin/python
 
 import sys
+from helpers import *
 
 # create empty symbol table, dict
 # add pre-defined symbols
@@ -21,50 +22,30 @@ symbolTable = {'SP': 0, 'R0': 0, 'LCL': 1, 'R1': 1, 'ARG': 2, 'R2': 2,
 	'THIS': 3, 'R3': 3, 'THAT': 4, 'R4': 4, 'R5': 5, 'R6': 6, 'R7': 7,
 	'R8': 8, 'R9': 9, 'R10': 10, 'R11': 11, 'R12': 12, 'R13': 13,
 	'R14': 14, 'R15': 15, 'SCREEN': 16384, 'KBD': 24576}
+	
+x = '0'
 
 # get name for new file
-title = sys.argv[1]
+title = sys.argv[1][0:3]
+
+# concatenate title with ".hack"
+title = title + '.hack'
 
 # create hack file to write to
-with open (title, 'w')
+h = open(title, 'w')
 
 # open file.asm to be translated
 with open(sys.argv[0], 'r') as f:
     for line in f:
     	line = f.readline()
 
-    	if line[0] == '@':
-    		x = findValueA()
+    	if '@' in line:
+    		x = findValueA(line)
 
-    	if line[0] is 'A' or 'D' or 'M':
-    		x = findValueC()
+    	# if 'A' or 'D' or 'M' in line:
+    		# x = findValueC()
 
     	# write x to hack file
-    	title.write(x)
+    	h.write(x)
 
-def findValueA(value):
-	# remove @ from string
-	value.lstrip()
-
-	# check if string is a number or letters using isdigit()
-	# TODO
-
-	# change value to an int
-	int(value)
-
-	# find value in binary
-	format(value, 'b')
-
-	# change to string
-	str(value)
-
-	#concatenate w/ @
-	value = value + '@'
-
-	# return value
-	return value
-
-def findValueC():  # TODO
-
-
-
+h.close()
