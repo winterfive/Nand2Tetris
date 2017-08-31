@@ -23,7 +23,7 @@ symbolTable = {'SP': 0, 'R0': 0, 'LCL': 1, 'R1': 1, 'ARG': 2, 'R2': 2,
 	'R8': 8, 'R9': 9, 'R10': 10, 'R11': 11, 'R12': 12, 'R13': 13,
 	'R14': 14, 'R15': 15, 'SCREEN': 16384, 'KBD': 24576}
 	
-x = '0'
+x = ''
 
 # get name for new file
 title = sys.argv[1][0:3]
@@ -35,17 +35,27 @@ title = title + '.hack'
 h = open(title, 'w')
 
 # open file.asm to be translated
-with open(sys.argv[0], 'r') as f:
+with open(sys.argv[1], 'r') as f:
     for line in f:
-    	line = f.readline()
-
+    	
+    	# if line is a comment
+    	if '//' in line:
+    		continue
+    	
+    	# if line begins with a space
+    	if not line:
+    		continue
+    	
+    	# if line is an A instruction
     	if '@' in line:
     		x = findValueA(line)
-
+		
+    	# if line is a C instruction
     	# if 'A' or 'D' or 'M' in line:
     		# x = findValueC()
 
     	# write x to hack file
     	h.write(x)
+    	h.write('\n')
 
 h.close()
