@@ -16,12 +16,6 @@ from helpers import *
 
 # 2nd Pass - scan program for each instruction
 #		   - find binary value for each instruction and place in output file
-
-# create dict symbolTable
-symbolTable = {'SP': 0, 'R0': 0, 'LCL': 1, 'R1': 1, 'ARG': 2, 'R2': 2,
-	'THIS': 3, 'R3': 3, 'THAT': 4, 'R4': 4, 'R5': 5, 'R6': 6, 'R7': 7,
-	'R8': 8, 'R9': 9, 'R10': 10, 'R11': 11, 'R12': 12, 'R13': 13,
-	'R14': 14, 'R15': 15, 'SCREEN': 16384, 'KBD': 24576}
 	
 x = ''
 
@@ -38,24 +32,31 @@ h = open(title, 'w')
 with open(sys.argv[1], 'r') as f:
     for line in f:
     	
+    # strip \n from each line first
+    	
     	# if line is a comment
     	if '//' in line:
+    		x = 'comment'
     		continue
     	
-    	# if line begins with a space
+    	# if line is empty
     	if not line:
+    		x = 'empty'
     		continue
+    	
+    	# if line is a Register address (label)
+    	# if line[0] is '@' and line[1].isalpha():
+    	# 	pass
     	
     	# if line is an A instruction
-    	if '@' in line:
+    	if line[0] == '@' and line[1].isdigit():
     		x = findValueA(line)
 		
     	# if line is a C instruction
-    	# if 'A' or 'D' or 'M' in line:
-    		# x = findValueC()
+    	if line[0].isalpha() and line[1] == '=':
+    		x = findValueC(line)
 
     	# write x to hack file
-    	h.write(x)
-    	h.write('\n')
+    	h.write(x + '\n')
 
 h.close()
