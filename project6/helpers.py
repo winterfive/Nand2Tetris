@@ -45,9 +45,29 @@ def findValueC(value):
 	x = ''
 
 	# parse the dest, comp, and jump pieces
-	value = value.split(=)
+	value = value.split('=')
+	dest = value[0]
+	comp = value[1]
+	
+	# split comp into comp and jump
+	comp = comp.split(';')
+	comp = comp[0]
+	jump = 'null'	# Remove later
+	# jump = comp[1]	# Use with more complicated files
+	
 	# find values for each
+	dest = destTable[dest]
+	comp = compTable[comp]
+	jump = jumpTable[jump]
+	
+	# find value for a
+	if 'M' in comp:
+		a = '1'
+	else:
+		a = '0'
+		
 	# concatenate parts and store value
+	value = ('111' + a + comp + dest + jump)
+	
 	# return value
-
 	return value
