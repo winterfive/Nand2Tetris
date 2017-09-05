@@ -38,50 +38,70 @@ def findValueA(value):
 	return value
 
 def findValueC(value):
-	# C Instruction or Jump
+	# C Instruction w/wo jump
 	# Purpose: return 16bit binary value of the arguement
 	# Stub: string -> string
 	
 	# if value is a jump
-	if ';' in value and '=' not in value:
-		# parse the comp and dest data
-		value = value.split(';')
-		comp = value[0]
-		jump = value[1]
+	if ';' in value:
 		
-		# find value of a
-		a = findAValue(comp)
-		
-		# find values for comp, jump, dest
-		comp = compTable[comp]
-		jump = jumpTable[jump]
-		dest = '000'
+		# if jump contains dest, comp, and jump
+		if '=' in value:
+			# parse jump data
+			value = value.split(';')
+			compAndDest = value[0]
+			jump = value[1]
+			
+			# parse comp and dest
+			compAndDest = compAndDest.split('=')
+			dest = compAndDest[0]
+			comp = compAndDest[1]
+			
+			# find value of a
+			a = findAbitValue(comp)
+			
+			# find values for comp, jump, dest
+			dest = destTable[dest]
+			comp = compTable[comp]
+			jump = jumpTable[jump]
+			
+		# jump contains only comp and jump
+		else:
+			# parse the comp and dest data
+			value = value.split(';')
+			comp = value[0]
+			jump = value[1]
+			
+			# find value of a
+			a = findAbitValue(comp)
+			
+			# find values for comp, jump, dest
+			comp = compTable[comp]
+			jump = jumpTable[jump]
+			dest = destTable['null']
 		
 	# value isn't a jump
 	else:
-		# parse the dest, comp, and jump data
+		# parse the dest and comp data
 		value = value.split('=')
 		dest = value[0]
 		comp = value[1]
 		
-		# split comp into comp and jump
-		comp = comp.split(';')
-		comp = comp[0]
-		jump = 'null'	# Remove later
-		# jump = comp[1]	# Use with more complicated files
+		# find value of a
+		a = findAbitValue(comp)
 		
 		# find values for each
-		dest = destTable[dest]
 		comp = compTable[comp]
-		jump = jumpTable[jump]
-	
+		dest = destTable[dest]
+		jump = jumpTable['null']
+		
 	# concatenate parts and store value
 	value = ('111' + a + comp + dest + jump)
 	
 	# return value
 	return value
 	
-def findAValue(comp):
+def findAbitValue(comp):
 	# A Value in a C Instruction
 	# Purpose: Find 1bit value for a
 	#Stub: string -> string
