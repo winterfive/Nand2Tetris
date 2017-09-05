@@ -1,17 +1,30 @@
 # create dict symbolTable
-symbolTable = {'SP': 0, 'R0': 0, 'LCL': 1, 'R1': 1, 'ARG': 2, 'R2': 2,
-	'THIS': 3, 'R3': 3, 'THAT': 4, 'R4': 4, 'R5': 5, 'R6': 6, 'R7': 7,
-	'R8': 8, 'R9': 9, 'R10': 10, 'R11': 11, 'R12': 12, 'R13': 13,
-	'R14': 14, 'R15': 15, 'SCREEN': 16384, 'KBD': 24576}
+symbolTable = {'SP': '0', 'R0': '0', 'LCL': '1', 'R1': '1', 'ARG': '2', 'R2': '2',
+	'THIS': '3', 'R3': '3', 'THAT': '4', 'R4': '4', 'R5': '5', 'R6': '6', 'R7': '7',
+	'R8': '8', 'R9': '9', 'R10': '10', 'R11': '11', 'R12': '12', 'R13': '13',
+	'R14': '14', 'R15': '15', 'SCREEN': '16384', 'KBD': '24576'}
 	
+destTable = {'null': '000', 'M': '001', 'D': '010', 'MD': '011', 'A': '100',
+	'AM': '101', 'AD': '110', 'AMD': '111'}
+	
+compTable = {'0': '101010', '1': '111111', '-1': '111010', 'D': '001100', 'A': '110000',
+	'!D': '001101', '!A': '110001', '-D': '001111', '-A': '110011', 'D+1': '011111',
+	'A+1': '110111', 'D+1': '001110', 'A-1': '110010', 'D+A': '000010', 'D-A': '010011',
+	'A-D': '000111', 'D&A': '000000', 'D|A': '010101', 'M': '110000', '!M': '110001',
+	'-M': '110011', 'M+1': '110111', 'M-1': '110010', 'D+M': '000010', 'D-M': '010011',
+	'M-D': '000111', 'D&M': '000000', 'D|M': '010101'}
+	
+jumpTable = {'null': '000', 'JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '100',
+	'JNE': '101', 'JLE': '110', 'JMP': '111'}
+		
 def findValueA(value):
 	# A instruction
 	# Purpose: return 16bit binary value of the arguement
 	# Stub: string -> int
-	
+
 	# remove @ from string
-	value = value.strip('@\n')
-	
+	value = value.strip('@')
+
 	# change value to an int
 	value = int(value)
 
@@ -20,7 +33,7 @@ def findValueA(value):
 
 	# if value(len) < 16:
 	value = value.zfill(16)
-		
+
 	# return value
 	return value
 
@@ -29,10 +42,12 @@ def findValueC(value):
 	# Purpose: return 16bit binary value of the arguement
 	# Stub: string -> int
 	
-	# parse the dest, comp, and jump pieces  TODO
+	x = ''
+
+	# parse the dest, comp, and jump pieces
+	value = value.split(=)
 	# find values for each
 	# concatenate parts and store value
 	# return value
-	
+
 	return value
-	
