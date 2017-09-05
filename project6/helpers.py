@@ -20,7 +20,7 @@ jumpTable = {'null': '000', 'JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '10
 def findValueA(value):
 	# A instruction
 	# Purpose: return 16bit binary value of the arguement
-	# Stub: string -> int
+	# Stub: string -> string
 
 	# remove @ from string
 	value = value.strip('@')
@@ -38,27 +38,53 @@ def findValueA(value):
 	return value
 
 def findValueC(value):
-	# C Instruction
+	# C Instruction or Jump
 	# Purpose: return 16bit binary value of the arguement
-	# Stub: string -> int
+	# Stub: string -> string
 	
-	x = ''
-
-	# parse the dest, comp, and jump pieces
-	value = value.split('=')
-	dest = value[0]
-	comp = value[1]
+	# if value is a jump
+	if ';' in value and '=' not in value:
+		# parse the comp and dest data
+		value = value.split(';')
+		comp = value[0]
+		jump = value[1]
+		
+		# find value of a
+		a = findAValue(comp)
+		
+		# find values for comp, jump, dest
+		comp = compTable[comp]
+		jump = jumpTable[jump]
+		dest = '000'
+		
+	# value isn't a jump
+	else:
+		# parse the dest, comp, and jump data
+		value = value.split('=')
+		dest = value[0]
+		comp = value[1]
+		
+		# split comp into comp and jump
+		comp = comp.split(';')
+		comp = comp[0]
+		jump = 'null'	# Remove later
+		# jump = comp[1]	# Use with more complicated files
+		
+		# find values for each
+		dest = destTable[dest]
+		comp = compTable[comp]
+		jump = jumpTable[jump]
 	
-	# split comp into comp and jump
-	comp = comp.split(';')
-	comp = comp[0]
-	jump = 'null'	# Remove later
-	# jump = comp[1]	# Use with more complicated files
+	# concatenate parts and store value
+	value = ('111' + a + comp + dest + jump)
 	
-	# find values for each
-	dest = destTable[dest]
-	comp = compTable[comp]
-	jump = jumpTable[jump]
+	# return value
+	return value
+	
+def findAValue(comp):
+	# A Value in a C Instruction
+	# Purpose: Find 1bit value for a
+	#Stub: string -> string
 	
 	# find value for a
 	if 'M' in comp:
@@ -66,8 +92,4 @@ def findValueC(value):
 	else:
 		a = '0'
 		
-	# concatenate parts and store value
-	value = ('111' + a + comp + dest + jump)
-	
-	# return value
-	return value
+	return  a
