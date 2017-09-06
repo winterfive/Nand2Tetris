@@ -20,7 +20,11 @@ from helpers import *
 x = ''
 
 # get name for new file
-title = sys.argv[1][0:3]
+title = sys.argv[1]
+
+# split name from file type
+title = title.split('.')
+title = title[0]
 
 # concatenate title with ".hack"
 title = title + '.hack'
@@ -54,7 +58,8 @@ with open(sys.argv[1], 'r') as f:
             x = findValueA(line)
 
         # if line is a C instruction
-        if line[0].isalpha() and line[1] == '=':
+        # if line[0].isalpha() and line[1] == '=':
+        else:
             x = findValueC(line)
 
         # write x to hack file
