@@ -18,6 +18,7 @@ from helpers import *
 #		   - find binary value for each instruction and place in output file
 
 x = ''
+n = 0
 
 # get name for new file
 title = sys.argv[1]
@@ -34,34 +35,27 @@ h = open(title, 'w')
 
 # open file.asm to be translated
 with open(sys.argv[1], 'r') as f:
+    
+    # first loop: find labels, store labels in table
     for line in f:
-
-        # strip \n from each line
-        line = line.strip('\n')
         
-        # remove in-line comments
-        line = line.split('/')
-        line = line[0]
+        if '()' in line:
+            x = handleLabelDec(line, n)
+            
+        n += 1
         
-        print(line)
+    # reset n
+    n = 0
+            
+    # evaluate all lines, find binary values for each
+    for line in f:
         
-        # # if line is a comment
-        # if '//' in line:
-        #     x = 'comment'
-        #     continue
-
-        # if line is empty
-        if not line:
-            x = 'empty'
-            continue
-
-        # if line is a Register address (label)
-        # if line[0] is '@' and line[1].isalpha():
-        # 	pass
-
+        # prep line for analysis
+        line = prepLine(line)
+            
         # if line is an A instruction
-        if line[0] == '@' and line[1].isdigit():
-            x = findValueA(line)
+        if '@' in line:
+            x = findValueA(line, n)
 
         # if line is a C instruction
         # if line[0].isalpha() and line[1] == '=':
@@ -70,5 +64,7 @@ with open(sys.argv[1], 'r') as f:
 
         # write x to hack file
         h.write(x + '\n')
+        
+        n += 1
 
 h.close()
