@@ -39,10 +39,16 @@ with open(sys.argv[1], 'r') as f:
         # strip \n from each line
         line = line.strip('\n')
         
-        # if line is a comment
-        if '//' in line:
-            x = 'comment'
-            continue
+        # remove in-line comments
+        line = line.split('/')
+        line = line[0]
+        
+        print(line)
+        
+        # # if line is a comment
+        # if '//' in line:
+        #     x = 'comment'
+        #     continue
 
         # if line is empty
         if not line:
