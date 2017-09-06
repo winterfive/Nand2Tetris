@@ -1,44 +1,42 @@
-# create dict symbolTable
-symbolTable = {'SP': '0', 'R0': '0', 'LCL': '1', 'R1': '1', 'ARG': '2', 'R2': '2',
+# create dict symbolDict
+symbolDict = {'SP': '0', 'R0': '0', 'LCL': '1', 'R1': '1', 'ARG': '2', 'R2': '2',
 	'THIS': '3', 'R3': '3', 'THAT': '4', 'R4': '4', 'R5': '5', 'R6': '6', 'R7': '7',
 	'R8': '8', 'R9': '9', 'R10': '10', 'R11': '11', 'R12': '12', 'R13': '13',
 	'R14': '14', 'R15': '15', 'SCREEN': '16384', 'KBD': '24576'}
 	
-destTable = {'null': '000', 'M': '001', 'D': '010', 'MD': '011', 'A': '100',
+destDict = {'null': '000', 'M': '001', 'D': '010', 'MD': '011', 'A': '100',
 	'AM': '101', 'AD': '110', 'AMD': '111'}
 	
-compTable = {'0': '101010', '1': '111111', '-1': '111010', 'D': '001100', 'A': '110000',
+compDict = {'0': '101010', '1': '111111', '-1': '111010', 'D': '001100', 'A': '110000',
 	'!D': '001101', '!A': '110001', '-D': '001111', '-A': '110011', 'D+1': '011111',
 	'A+1': '110111', 'D-1': '001110', 'A-1': '110010', 'D+A': '000010', 'D-A': '010011',
 	'A-D': '000111', 'D&A': '000000', 'D|A': '010101', 'M': '110000', '!M': '110001',
 	'-M': '110011', 'M+1': '110111', 'M-1': '110010', 'D+M': '000010', 'D-M': '010011',
 	'M-D': '000111', 'D&M': '000000', 'D|M': '010101'}
 	
-jumpTable = {'null': '000', 'JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '100',
+jumpDict = {'null': '000', 'JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '100',
 	'JNE': '101', 'JLE': '110', 'JMP': '111'}
 	
-def prepLine(line):
-	# Prepare all lines for analysis
-	# Purpose: Remove whitespace and comments from all lines
-	# Stub: string -> string
-
-	# strip \n from each line
+def cleanLine(line):
+	
+	# remove newline char
     line = line.strip('\n')
-
+    
     # remove in-line comments
     if '/' in line:
 	    line = line.split('/')
 	    line = line[0]
-
-	line = line.strip()
-
+    
+    # remove whitespace from each line
+    line = line.strip()
+    
     return line
-
-def handleLabelDeclarations(value, n):
+	
+def storeSymbol(value, n):
 	# Label Declaration
-	# Purpose: Place label name & value in table
+	# Purpose: Place label name & value in Dict
 	# Stub: string, int -> null
-
+	
 	# remove () from value
 	value = value.strip('()')
 
@@ -48,8 +46,8 @@ def handleLabelDeclarations(value, n):
 	# replace label with n (line count via arguement)
 	value = n + 1
 
-	# place new symbol in table
-	symbolTable[keyName] = value
+	# place new symbol in Dict
+	symbolDict[keyName] = value
 
 def findValueA(value, n):
 	# A instruction
@@ -59,9 +57,9 @@ def findValueA(value, n):
 	# remove @ from string
 	value = value.strip('@')
 
-	# if symbol in table, return value
-	if value in symbolTable:
-		value = symbolTable[value]
+	# if symbol in Dict, return value
+	if value in symbolDict:
+		value = symbolDict[value]
 
 	# change value to an int
 	value = int(value)
@@ -74,6 +72,13 @@ def findValueA(value, n):
 
 	# return value
 	return value
+	
+def findSymbol(value, n):
+	# Symbol Declaration
+	# Purpose: return 16bit binary value of argement
+	# Stub: string, int -> string
+	
+	# TODO
 
 def findValueC(value):
 	# C Instruction or Jump
@@ -99,9 +104,9 @@ def findValueC(value):
 			a = findAbitValue(comp)
 
 			# find values for comp, jump, dest
-			dest = destTable[dest]
-			comp = compTable[comp]
-			jump = jumpTable[jump]
+			dest = destDict[dest]
+			comp = compDict[comp]
+			jump = jumpDict[jump]
 			
 		# jump contains only comp and jump
 		else:
@@ -114,9 +119,9 @@ def findValueC(value):
 			a = findAbitValue(comp)
 			
 			# find values for comp, jump, dest
-			comp = compTable[comp]
-			jump = jumpTable[jump]
-			dest = destTable['null']
+			comp = compDict[comp]
+			jump = jumpDict[jump]
+			dest = destDict['null']
 		
 	# value isn't a jump
 	else:
@@ -129,9 +134,9 @@ def findValueC(value):
 		a = findAbitValue(comp)
 		
 		# find values for each
-		comp = compTable[comp]
-		dest = destTable[dest]
-		jump = jumpTable['null']
+		comp = compDict[comp]
+		dest = destDict[dest]
+		jump = jumpDict['null']
 		
 	# concatenate parts and store value
 	value = ('111' + a + comp + dest + jump)
