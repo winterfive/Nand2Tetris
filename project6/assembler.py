@@ -18,7 +18,7 @@ from helpers import *
 #		   - find binary value for each instruction and place in output file
 
 x = ''
-n = 0
+n = 1
 
 # get name for new file
 title = sys.argv[1]
@@ -36,29 +36,51 @@ h = open(title, 'w')
 # open file.asm to be translated
 with open(sys.argv[1], 'r') as f:
     
-    # first loop: find labels, store labels in table
+    # 1st pass: find and store all symbol values in symbolTable
     for line in f:
         
-        if '()' in line:
-            x = handleLabelDec(line, n)
-            
-        n += 1
+        # if line is empty or a comment, skip it
+        if not line or line.startswith('/'):
+            continue
         
-    # reset n
-    n = 0
-            
-    # evaluate all lines, find binary values for each
+        line = cleanLine(line)
+        
+        if line.startswith('('):
+            x = storeSymbol(line, n)
+            n += 1
+            print(line)
+        else:
+            print("not a symbol")
+            continue
+        
+    # reset f
+    f.seek(0, 0)
+    
+    # set n to 16 (1st available register is R16)
+    n = 16
+    
+    # 2nd pass: evaluate all lines, find binary values for each
     for line in f:
         
-        # prep line for analysis
-        line = prepLine(line)
-            
+        # remove whitespace and newline char
+        line = cleanLine(line)
+        
+        # if line is empty or a comment
+        if not line or line.startswith('/'):
+            n += 1
+            continue
+        
+        print(line)
+        
         # if line is an A instruction
         if '@' in line:
             x = findValueA(line, n)
-
+            
+        # if line is a symbol
+        if line.startswith('('):
+            x = findSymbol(line)
+        
         # if line is a C instruction
-        # if line[0].isalpha() and line[1] == '=':
         else:
             x = findValueC(line)
 
