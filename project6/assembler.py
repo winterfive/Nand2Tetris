@@ -50,11 +50,10 @@ with open(sys.argv[1], 'r') as f:
             n += 1
             print(line)
         else:
-            print("not a symbol")
             continue
         
     # reset f
-    f.seek(0, 0)
+    f.seek(0)
     
     # set n to 16 (1st available register is R16)
     n = 16
@@ -70,14 +69,12 @@ with open(sys.argv[1], 'r') as f:
             n += 1
             continue
         
-        print(line)
-        
         # if line is an A instruction
-        if '@' in line:
+        if line.startswith('@'):
             x = findValueA(line, n)
             
         # if line is a symbol
-        if line.startswith('('):
+        elif line.startswith('('):
             x = findSymbol(line)
         
         # if line is a C instruction
