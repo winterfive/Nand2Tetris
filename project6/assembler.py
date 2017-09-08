@@ -18,7 +18,7 @@ from helpers import *
 #		   - find binary value for each instruction and place in output file
 
 x = ''
-n = 1
+n = 0
 
 # get name for new file
 title = sys.argv[1]
@@ -39,18 +39,24 @@ with open(sys.argv[1], 'r') as f:
     # 1st pass: find and store all symbol values in symbolTable
     for line in f:
         
-        # if line is empty or a comment, skip it
-        if not line or line.startswith('/'):
-            continue
-        
+        # remove whitespace and inline comments
         line = cleanLine(line)
         
-        if line.startswith('('):
-            x = storeSymbol(line, n)
-            n += 1
-            print(line)
-        else:
+        # if line is empty 
+        if not line:
             continue
+        
+        # if line isn't empty
+        else:
+            
+            # if line is a label
+            if line.startswith('('):
+                
+                # store label values in symbolDict
+                x = storeLabel(line, n)
+                
+            else:
+                n += 1
         
     # reset f
     f.seek(0)
@@ -66,16 +72,16 @@ with open(sys.argv[1], 'r') as f:
         
         # if line is empty or a comment
         if not line or line.startswith('/'):
-            n += 1
             continue
         
         # if line is an A instruction
         if line.startswith('@'):
             x = findValueA(line, n)
+            n += 1
             
         # if line is a symbol
         elif line.startswith('('):
-            x = findSymbol(line)
+            continue
         
         # if line is a C instruction
         else:
@@ -83,7 +89,5 @@ with open(sys.argv[1], 'r') as f:
 
         # write x to hack file
         h.write(x + '\n')
-        
-        n += 1
 
 h.close()
