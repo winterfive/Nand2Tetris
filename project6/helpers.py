@@ -32,22 +32,18 @@ def cleanLine(line):
     
     return line
 	
-def storeSymbol(value, n):
+def storeLabel(value, n):
 	# Label Declaration
 	# Purpose: Place label name & value in Dict
 	# Stub: string, int -> none
 	
 	# remove () from value
 	value = value.strip('()')
-
-	# create variable to hold value keyname
-	keyName = value
-
-	# replace label with n (line count via arguement)
-	value = n + 1
-
+	
 	# place new symbol in Dict
-	symbolDict[keyName] = value
+	symbolDict[value] = n
+	
+	return(value, n)
 
 def findValueA(value, n):
 	# A instruction
@@ -61,19 +57,16 @@ def findValueA(value, n):
 	if value in symbolDict:
 		value = symbolDict[value]
 
-	# change value to an int
+	# change string value to an int
 	value = int(value)
 
 	# find value in binary
-	value = format(value, 'b')
-
-	# if value(len) < 16:
-	value = value.zfill(16)
+	value = format(value, '016b')
 
 	# return value
 	return value
 	
-def findSymbol(value, n):
+def findSymbol(value):
 	# Symbol Declaration
 	# Purpose: return 16bit binary value of arguement
 	# Stub: string, int -> string
@@ -84,7 +77,14 @@ def findSymbol(value, n):
 	# get value from dict
 	value = symbolDict[value]
 	
-	# do I need to run returned value through A instruc. function?  TODO
+	# change value to an int
+	value = int(value)
+
+	# find value in binary
+	value = format(value, '016b')
+
+	# return value
+	return value
 	
 def findValueC(value):
 	# C Instruction or Jump
