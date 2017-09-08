@@ -17,6 +17,7 @@ from helpers import *
 # 2nd Pass - scan program for each instruction
 #		   - find binary value for each instruction and place in output file
 
+# Variables
 x = ''
 n = 0
 
@@ -58,30 +59,27 @@ with open(sys.argv[1], 'r') as f:
             else:
                 n += 1
         
+    # reset n
+    n = 16
+    
     # reset f
     f.seek(0)
-    
-    # set n to 16 (1st available register is R16)
-    n = 16
     
     # 2nd pass: evaluate all lines, find binary values for each
     for line in f:
         
-        # remove whitespace and newline char
+        # remove whitespace and newline
         line = cleanLine(line)
         
-        # if line is empty or a comment
-        if not line or line.startswith('/'):
+        # if line is empty, a comment, or a label declaration
+        if not line \
+        or line.startswith('/') \
+        or line.startswith('('):
             continue
         
         # if line is an A instruction
         if line.startswith('@'):
             x = findValueA(line, n)
-            n += 1
-            
-        # if line is a symbol
-        elif line.startswith('('):
-            continue
         
         # if line is a C instruction
         else:
