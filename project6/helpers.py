@@ -17,6 +17,9 @@ compDict = {'0': '101010', '1': '111111', '-1': '111010', 'D': '001100', 'A': '1
 jumpDict = {'null': '000', 'JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '100',
 	'JNE': '101', 'JLE': '110', 'JMP': '111'}
 	
+# variable for RAM address register iteration, see findValueA
+count = 16
+	
 def cleanLine(line):
 	
 	# remove newline char
@@ -53,12 +56,26 @@ def findValueA(value, n):
 	# remove @ from string
 	value = value.strip('@')
 
-	# if symbol in Dict, return value
+	# if value in Dict, return value
 	if value in symbolDict:
 		value = symbolDict[value]
-
-	# change string value to an int
-	value = int(value)
+		
+		# change string value to an int
+		value = int(value)
+		
+	# if value is a number
+	elif value.isnumeric():
+		value = int(value)
+		
+	# value is a RAM address
+	else:
+		# place value in symbolTable
+		symbolDict[value] = count
+		
+		# change string value to int
+		value = int(count)
+		
+		incrementCount(count)
 
 	# find value in binary
 	value = format(value, '016b')
@@ -162,3 +179,12 @@ def findAbitValue(comp):
 		a = '0'
 		
 	return  a
+	
+def incrementCount(value):
+	# Purpose: Increments count
+	# Stub: int -> int
+	
+	value += 1
+	global count
+	count = value
+	
